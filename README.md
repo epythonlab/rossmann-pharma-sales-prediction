@@ -47,6 +47,7 @@ The project structure is organized to support reproducible and scalable data pro
 ### Create virtual environment
 
 >>> python3 -m venv venv # on MacOs or Linux
+
 >>> source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 ### Install Dependencies
@@ -56,5 +57,6 @@ The project structure is organized to support reproducible and scalable data pro
 ## To run tests
 navigate 
 >>> cd tests/
+
 >>pytest # all tests will be tested
 
