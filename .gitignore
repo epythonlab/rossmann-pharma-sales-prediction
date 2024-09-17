@@ -1,0 +1,13 @@
+### AL ###
+# Exclude the following files and directories from remote repo
+venv/
+.venv/
+.env
+__pycache__/
+*.pyc
+.DS_Store
+Data/
+data/
+data.zip
+MachineLearningRating_v3.txt.dvc
+README.pdf
