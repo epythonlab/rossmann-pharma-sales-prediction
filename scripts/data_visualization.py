@@ -1,7 +1,9 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import chi2_contingency
+
 class Visualyzer:
     def __init__(self, train_data: pd.DataFrame, test_data: pd.DataFrame):
         self.train_data = train_data
@@ -43,7 +45,7 @@ class Visualyzer:
         print("Testing Promo2 Distribution:\n", test_promo2_dist)
 
         # Plot distributions
-        plt.figure(figsize=(12, 6))
+        plt.figure(figsize=(12, 4))
 
         plt.subplot(1, 2, 1)
         sns.barplot(x=train_promo_dist.index, y=train_promo_dist.values, color='blue', alpha=0.6, label='Training')
@@ -89,10 +91,53 @@ class Visualyzer:
         # Group by HolidayPeriod and calculate average sales
         holiday_sales = data.groupby('HolidayPeriod')['Sales'].mean().reset_index()
 
+        
         # Plot sales behavior before, during, and after holidays
-        plt.figure(figsize=(10, 6))
-        plt.bar(holiday_sales['HolidayPeriod'], holiday_sales['Sales'], color=['blue', 'orange', 'green'])
+        plt.figure(figsize=(10, 4))
+        bars = plt.bar(holiday_sales['HolidayPeriod'], holiday_sales['Sales'], color=['blue', 'orange', 'green'])
+
+        # Add annotations on top of each bar
+        for bar in bars:
+            yval = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width()/2, yval, round(yval, 2), va='bottom', ha='center')  # 'va' for vertical alignment, 'ha' for horizontal alignment
+
+        # Customize plot
         plt.title('Sales Behavior Before, During, and After Holidays')
         plt.xlabel('Holiday Period')
         plt.ylabel('Average Sales')
+
+        # Show plot
+        plt.show()
+    
+    def seasonal_sales_behavior(self):
+        
+        # Filter the dataset for open stores
+        df_open = self.train_data[train_data['Open'] == 1]
+
+        # Group by StateHoliday and calculate the average sales
+        seasonal_sales = df_open.groupby('StateHoliday')['Sales'].mean().reset_index()
+
+        # Rename the holidays for better understanding
+
+        seasonal_sales['StateHoliday'] = seasonal_sales['StateHoliday'].astype(str).replace({
+            'a': 'Public Holiday',
+            'b': 'Easter Holiday',
+            'c': 'Christmas',
+            '0': 'No Holiday'
+        })
+
+        # Plot the seasonal behavior
+        plt.figure(figsize=(8, 4))
+        bars = plt.bar(seasonal_sales['StateHoliday'], seasonal_sales['Sales'], color=['blue', 'orange', 'green', 'red'])
+
+        # Annotate the bars with the exact sales numbers
+        for bar in bars:
+            yval = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width()/2, yval, round(yval, 2), va='bottom', ha='center')
+
+        # Customize the plot
+        plt.title('Seasonal Sales Behavior (Christmas, Easter, etc.)')
+        plt.xlabel('Holiday Type')
+        plt.ylabel('Average Sales')
+
         plt.show()
