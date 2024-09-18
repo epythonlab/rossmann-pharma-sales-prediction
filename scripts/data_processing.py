@@ -39,9 +39,8 @@ class DataProcessing:
         missing_df = missing_df.sort_values(by='Percentage (%)', ascending=False)
         
         return missing_df
-    
-   
 
+   
     def check_data_types(train_data, test_data):
         """
         Function to check and compare the data types of columns in both training and test datasets.
