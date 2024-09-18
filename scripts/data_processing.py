@@ -40,44 +40,68 @@ class DataProcessing:
         
         return missing_df
     
-    def handle_missing_data(self, missing_type: str, missing_cols: list) -> pd.DataFrame:
+   
+
+    def check_data_types(train_data, test_data):
         """
-        Handles missing data based on predefined strategies.
+        Function to check and compare the data types of columns in both training and test datasets.
+        
+        Args:
+        train_data (pd.DataFrame): The training dataset.
+        test_data (pd.DataFrame): The test dataset.
+        
+        Returns:
+        None
         """
-        if missing_type == 'high':
-            # Drop columns with high missing data
-            self.data = self.data.drop(columns=missing_cols, errors='ignore')
-        elif missing_type == 'moderate':
-            # Impute or drop columns with moderate missing data
-            for col in missing_cols:
-                if col in self.data.columns:
-                    if self.data[col].dtype == 'object':
-                        # Impute categorical columns with mode (check if mode exists)
-                        if not self.data[col].mode().empty:
-                            self.data[col] = self.data[col].fillna(self.data[col].mode()[0])
-                        else:
-                            self.data[col] = self.data[col].fillna('Unknown')  # Default for empty mode
-                    else:
-                        # Impute numerical columns with median (check if median exists)
-                        if not self.data[col].isnull().all():  # Ensure column has some numeric values
-                            self.data[col] = self.data[col].fillna(self.data[col].median())
-                        else:
-                            self.data[col] = self.data[col].fillna(0)  # Default for empty median
-        else:
-            # Handle low missing data (default)
-            for col in missing_cols:
-                if col in self.data.columns:
-                    if self.data[col].dtype == 'object':
-                        if not self.data[col].mode().empty:
-                            self.data[col] = self.data[col].fillna(self.data[col].mode()[0])
-                        else:
-                            self.data[col] = self.data[col].fillna('Unknown')  # Default for empty mode
-                    else:
-                        if not self.data[col].isnull().all():
-                            self.data[col] = self.data[col].fillna(self.data[col].median())
-                        else:
-                            self.data[col] = self.data[col].fillna(0)  # Default for empty median
-
-        return self.data
-
-
+        # Check data types of the training dataset
+        print("Training Dataset Data Types:\n")
+        print(train_data.dtypes)
+        print("\n" + "="*50 + "\n")
+        
+        # Check data types of the test dataset
+        print("Test Dataset Data Types:\n")
+        print(test_data.dtypes)
+        print("\n" + "="*50 + "\n")
+        
+        # Check for differences in column names and data types
+        print("Differences in column names and data types between training and test datasets:\n")
+        train_dtypes = train_data.dtypes
+        test_dtypes = test_data.dtypes
+        
+        for column in train_dtypes.index:
+            if column in test_dtypes.index:
+                if train_dtypes[column] != test_dtypes[column]:
+                    print(f"Data type mismatch for column '{column}':")
+                    print(f"Train: {train_dtypes[column]}, Test: {test_dtypes[column]}")
+                    print("-" * 50)
+            else:
+                print(f"Column '{column}' is present in training data but missing in test data.")
+        
+        for column in test_dtypes.index:
+            if column not in train_dtypes.index:
+                print(f"Column '{column}' is present in test data but missing in training data.")
+    
+    def convert_state_holiday(df):
+        """
+        Convert the 'StateHoliday' column to a consistent numeric format.
+        
+        Args:
+            df (pd.DataFrame): The DataFrame containing the 'StateHoliday' column.
+        
+        Returns:
+            pd.DataFrame: DataFrame with 'StateHoliday' column converted to numeric categories.
+        """
+        # Convert the entire 'StateHoliday' column to string
+        df['StateHoliday'] = df['StateHoliday'].astype(str)
+        # Define the mapping for categorical values
+        holiday_mapping = {
+            'a': 1,  # Public holiday
+            'b': 2,  # Easter holiday
+            'c': 3,  # Christmas
+            '0': 0   # No holiday
+        }
+        
+        # Convert 'StateHoliday' column using the mapping
+        df['StateHoliday'] = df['StateHoliday'].map(holiday_mapping).astype(int)
+        
+        return df
