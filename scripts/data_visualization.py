@@ -200,3 +200,47 @@ class Visualyzer:
 
         plt.tight_layout()
         plt.show()
+    
+    def _high_impact_stores(top_n=10):
+        # Ensure 'Store', 'Promo', 'Promo2', 'Sales', and 'Customers' are present in the DataFrame
+        df = self.train_data.reset_index()
+        required_columns = {'Store', 'Promo', 'Promo2', 'Sales', 'Customers'}
+        if not required_columns.issubset(df.columns):
+            raise KeyError(f"One or more required columns are missing: {required_columns}")
+        
+        # Filter for stores with Promo active and calculate the mean Sales and Customers by store
+        promo_impact = df[df['Promo'] == 1][['Store', 'Sales', 'Customers']].groupby('Store').mean().reset_index()
+        
+        # Filter for stores with Promo2 active and calculate the mean Sales and Customers by store
+        promo2_impact = df[df['Promo2'] == 1][['Store', 'Sales', 'Customers']].groupby('Store').mean().reset_index()
+        
+        # Merge data for comparison
+        common_stores_comparison = pd.merge(promo_impact, promo2_impact, on='Store', suffixes=('_Promo', '_Promo2'))
+
+        # Sort stores by average sales in descending order for both Promo and Promo2
+        promo_impact_sorted = promo_impact.sort_values(by='Sales', ascending=False).head(top_n)
+        promo2_impact_sorted = promo2_impact.sort_values(by='Sales', ascending=False).head(top_n)
+        
+        # Define a color palette
+        promo_colors = sns.color_palette("Blues", top_n)
+        promo2_colors = sns.color_palette("Greens", top_n)
+        
+        # Plotting the high-impact stores for both Promo and Promo2
+        fig, axs = plt.subplots(1, 2, figsize=(14, 6))
+
+        # Bar chart for Promo with different colors for each bar
+        axs[0].bar(promo_impact_sorted['Store'].astype(str), promo_impact_sorted['Sales'], color=promo_colors)
+        axs[0].set_title(f'Top {top_n} High Impact Stores: Promo')
+        axs[0].set_xlabel('Store')
+        axs[0].set_ylabel('Average Sales')
+        axs[0].tick_params(axis='x', rotation=45)
+
+        # Bar chart for Promo2 with different colors for each bar
+        axs[1].bar(promo2_impact_sorted['Store'].astype(str), promo2_impact_sorted['Sales'], color=promo2_colors)
+        axs[1].set_title(f'Top {top_n} High Impact Stores: Promo2')
+        axs[1].set_xlabel('Store')
+        axs[1].set_ylabel('Average Sales')
+        axs[1].tick_params(axis='x', rotation=45)
+
+        plt.tight_layout()
+        plt.show()
