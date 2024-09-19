@@ -148,3 +148,55 @@ class Visualyzer:
         plt.ylabel('Average Sales')
 
         plt.show()
+    def plot_promo_impact(self):
+        """
+        Plots the impact of promotions on average sales and customer counts.
+
+        Parameters:
+        train_data (DataFrame): The input dataframe containing promotional and sales data.
+        """
+        # Reset index if needed
+        df = self.train_data.reset_index()
+        
+        # Ensure that 'Promo' and 'Promo2' are of correct type
+        df['Promo'] = df['Promo'].astype(bool)
+        df['Promo2'] = df['Promo2'].astype(bool)
+
+        # Calculate average sales and customer counts
+        promo_sales_avg = df[df['Promo']]['Sales'].mean()
+        non_promo_sales_avg = df[~df['Promo']]['Sales'].mean()
+
+        promo2_sales_avg = df[df['Promo2']]['Sales'].mean()
+        non_promo2_sales_avg = df[~df['Promo2']]['Sales'].mean()
+
+        promo_customers_avg = df[df['Promo']]['Customers'].mean()
+        non_promo_customers_avg = df[~df['Promo']]['Customers'].mean()
+
+        promo2_customers_avg = df[df['Promo2']]['Customers'].mean()
+        non_promo2_customers_avg = df[~df['Promo2']]['Customers'].mean()
+
+        # Bar charts
+        fig, axs = plt.subplots(2, 2, figsize=(12, 6))
+
+        # Sales for Promo
+        axs[0, 0].bar(['Promo', 'Non-Promo'], [promo_sales_avg, non_promo_sales_avg], color=['blue', 'orange'])
+        axs[0, 0].set_title('Average Sales: Promo vs Non-Promo')
+        axs[0, 0].set_ylabel('Average Sales')
+
+        # Sales for Promo2
+        axs[0, 1].bar(['Promo2', 'Non-Promo2'], [promo2_sales_avg, non_promo2_sales_avg], color=['green', 'red'])
+        axs[0, 1].set_title('Average Sales: Promo2 vs Non-Promo2')
+        axs[0, 1].set_ylabel('Average Sales')
+
+        # Customer Counts for Promo
+        axs[1, 0].bar(['Promo', 'Non-Promo'], [promo_customers_avg, non_promo_customers_avg], color=['blue', 'orange'])
+        axs[1, 0].set_title('Average Customer Count: Promo vs Non-Promo')
+        axs[1, 0].set_ylabel('Average Customer Count')
+
+        # Customer Counts for Promo2
+        axs[1, 1].bar(['Promo2', 'Non-Promo2'], [promo2_customers_avg, non_promo2_customers_avg], color=['green', 'red'])
+        axs[1, 1].set_title('Average Customer Count: Promo2 vs Non-Promo2')
+        axs[1, 1].set_ylabel('Average Customer Count')
+
+        plt.tight_layout()
+        plt.show()
