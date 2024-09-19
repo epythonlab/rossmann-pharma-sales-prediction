@@ -109,26 +109,33 @@ class Visualyzer:
         # Show plot
         plt.show()
     
-    def seasonal_sales_behavior(self):
-        
+    def seasonal_sales_behavior(self, ascending=True): 
+    
         # Filter the dataset for open stores
-        df_open = self.train_data[train_data['Open'] == 1]
-
+        df_open = self.train_data[self.train_data['Open'] == 1].copy()  # Use a copy to avoid modifying the original data
+        # Convert StateHoliday as str
+        df_open['StateHoliday'] = df_open['StateHoliday'].astype(str)
+        
         # Group by StateHoliday and calculate the average sales
         seasonal_sales = df_open.groupby('StateHoliday')['Sales'].mean().reset_index()
 
         # Rename the holidays for better understanding
-
-        seasonal_sales['StateHoliday'] = seasonal_sales['StateHoliday'].astype(str).replace({
+        seasonal_sales['StateHoliday'] = seasonal_sales['StateHoliday'].replace({
             'a': 'Public Holiday',
             'b': 'Easter Holiday',
             'c': 'Christmas',
             '0': 'No Holiday'
         })
 
+        # Sort by Sales in ascending or descending order based on the argument
+        seasonal_sales = seasonal_sales.sort_values(by='Sales', ascending=ascending)
+
+        # Generate color dynamically based on the number of unique categories
+        colors = plt.cm.Paired(range(len(seasonal_sales)))
+
         # Plot the seasonal behavior
         plt.figure(figsize=(8, 4))
-        bars = plt.bar(seasonal_sales['StateHoliday'], seasonal_sales['Sales'], color=['blue', 'orange', 'green', 'red'])
+        bars = plt.bar(seasonal_sales['StateHoliday'], seasonal_sales['Sales'], color=colors)
 
         # Annotate the bars with the exact sales numbers
         for bar in bars:
