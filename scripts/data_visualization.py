@@ -202,7 +202,7 @@ class Visualyzer:
         plt.tight_layout()
         plt.show()
     
-    def _high_impact_stores(top_n=10):
+    def _high_impact_stores(self, top_n=10):
         # Ensure 'Store', 'Promo', 'Promo2', 'Sales', and 'Customers' are present in the DataFrame
         df = self.train_data.reset_index()
         required_columns = {'Store', 'Promo', 'Promo2', 'Sales', 'Customers'}
