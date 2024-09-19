@@ -148,6 +148,7 @@ class Visualyzer:
         plt.ylabel('Average Sales')
 
         plt.show()
+        
     def plot_promo_impact(self):
         """
         Plots the impact of promotions on average sales and customer counts.
@@ -243,4 +244,40 @@ class Visualyzer:
         axs[1].tick_params(axis='x', rotation=45)
 
         plt.tight_layout()
+        plt.show()
+    
+    def analyze_trend(self):
+        df = self.train_data.reset_index()
+        # Ensure 'Open' column is correctly identified as 0 (closed) and 1 (open)
+        # Create separate DataFrames for open and closed states
+        open_data = df[df['Open'] == 1]
+        closed_data = df[df['Open'] == 0]
+
+        # Aggregate data by DayOfWeek
+        open_daily_agg = open_data.groupby('DayOfWeek').agg({'Sales': 'mean', 'Customers': 'mean'}).reset_index()
+        closed_daily_agg = closed_data.groupby('DayOfWeek').agg({'Sales': 'mean', 'Customers': 'mean'}).reset_index()
+
+        # Plot trends
+        fig, ax1 = plt.subplots(figsize=(12, 4))
+
+        # Plot average sales for open and closed states
+        color = 'tab:blue'
+        ax1.set_xlabel('Day of Week')
+        ax1.set_ylabel('Average Sales', color=color)
+        ax1.plot(open_daily_agg['DayOfWeek'], open_daily_agg['Sales'], color=color, marker='o', label='Open - Average Sales')
+        ax1.plot(closed_daily_agg['DayOfWeek'], closed_daily_agg['Sales'], color='tab:orange', marker='o', linestyle='--', label='Closed - Average Sales')
+        ax1.tick_params(axis='y', labelcolor=color)
+
+        # Create a second y-axis for average customers
+        ax2 = ax1.twinx()
+        color = 'tab:green'
+        ax2.set_ylabel('Average Customers', color=color)
+        ax2.plot(open_daily_agg['DayOfWeek'], open_daily_agg['Customers'], color=color, marker='o', label='Open - Average Customers')
+        ax2.plot(closed_daily_agg['DayOfWeek'], closed_daily_agg['Customers'], color='tab:red', marker='o', linestyle='--', label='Closed - Average Customers')
+        ax2.tick_params(axis='y', labelcolor=color)
+
+        # Title and legend
+        plt.title('Customer Behavior Trends: Open vs Closed by Day of the Week')
+        fig.tight_layout()
+        plt.legend(loc='upper left', bbox_to_anchor=(0.1,0.9))
         plt.show()
