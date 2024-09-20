@@ -281,3 +281,40 @@ class Visualyzer:
         fig.tight_layout()
         plt.legend(loc='upper left', bbox_to_anchor=(0.1,0.9))
         plt.show()
+        
+    def plot_assortment_sales(self):
+        data = self.train_data.copy()
+        # Map assortment types
+        assortment_mapping = {
+            'a': 'Basic',
+            'b': 'Extra',
+            'c': 'Extended'
+        }
+        data['AssortmentType'] = data['Assortment'].map(assortment_mapping)
+        
+        # Filter data for weekdays and weekends
+        weekday_data = data[data['DayOfWeek'] <= 5]
+        weekend_data = data[data['DayOfWeek'] >= 6]
+        
+        # Calculate average sales for each assortment type
+        weekday_sales = weekday_data.groupby('AssortmentType')['Sales'].mean().reset_index()
+        weekend_sales = weekend_data.groupby('AssortmentType')['Sales'].mean().reset_index()
+        
+        # Plotting
+        fig, ax = plt.subplots(1, 2, figsize=(14, 6), sharey=True)
+        
+        # Weekday Sales Plot
+        sns.barplot(x='AssortmentType', y='Sales', data=weekday_sales, hue='AssortmentType', ax=ax[0], palette='viridis', dodge=False)
+        ax[0].set_title('Average Weekday Sales by Assortment Type')
+        ax[0].set_xlabel('Assortment Type')
+        ax[0].set_ylabel('Average Sales')
+        
+        # Weekend Sales Plot
+        sns.barplot(x='AssortmentType', y='Sales', data=weekend_sales, hue='AssortmentType', ax=ax[1], palette='viridis', dodge=False)
+        ax[1].set_title('Average Weekend Sales by Assortment Type')
+        ax[1].set_xlabel('Assortment Type')
+        ax[1].set_ylabel('Average Sales')
+        
+        plt.tight_layout()
+        plt.show()
+        
