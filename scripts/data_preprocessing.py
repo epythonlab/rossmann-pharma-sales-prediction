@@ -59,15 +59,17 @@ class DataPreprocessor:
         # Fill missing values for 'CompetitionDistance' with the median
         combined_df['CompetitionDistance'] = combined_df['CompetitionDistance'].fillna(combined_df['CompetitionDistance'].median())
         
-        # Fill missing values for competition opening year and month
-        combined_df['CompetitionOpenSinceYear'] = combined_df['CompetitionOpenSinceYear'].fillna(combined_df['CompetitionOpenSinceYear'].median())
-        combined_df['CompetitionOpenSinceMonth'] = combined_df['CompetitionOpenSinceMonth'].fillna(combined_df['CompetitionOpenSinceMonth'].mode()[0])
-        
         # Drop unnecessary columns if they exist
         if 'Promo2SinceYear' in combined_df.columns:
             combined_df = combined_df.drop(columns=['Promo2SinceYear'])
         if 'Promo2SinceWeek' in combined_df.columns:
             combined_df = combined_df.drop(columns=['Promo2SinceWeek'])
+        if 'CompetitionOpenSinceYear' in combined_df.columns:
+            combined_df = combined_df.drop(columns=['CompetitionOpenSinceYear'])
+        
+        if 'CompetitionOpenSinceMonth' in combined_df.columns:
+            combined_df = combined_df.drop(columns=['CompetitionOpenSinceMonth'])
+        
 
         # Split the data back into train and test after handling missing values
         self.train_df = combined_df.xs('train')
@@ -106,8 +108,8 @@ class DataPreprocessor:
         """
         for df in [self.train_df, self.test_df]:
             # Calculate the competition open duration in months
-            df['CompetitionOpenSince'] = (df['Year'] - df['CompetitionOpenSinceYear']) * 12 + (df['Month'] - df['CompetitionOpenSinceMonth'])
-            df['CompetitionOpenSince'] = df['CompetitionOpenSince'].fillna(0)  # Fill missing values
+            # df['CompetitionOpenSince'] = (df['Year'] - df['CompetitionOpenSinceYear']) * 12 + (df['Month'] - df['CompetitionOpenSinceMonth'])
+            # df['CompetitionOpenSince'] = df['CompetitionOpenSince'].fillna(0)  # Fill missing values
             
             # Create a new feature to indicate if the store is open during holidays
             df['IsHoliday'] = df.apply(lambda x: 1 if (x['StateHoliday'] != '0' or x['SchoolHoliday'] == 1) else 0, axis=1)
