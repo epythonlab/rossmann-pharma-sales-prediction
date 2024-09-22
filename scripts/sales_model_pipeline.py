@@ -51,14 +51,17 @@ class SalesModel:
         self.model_pipeline = Pipeline([
             ('scaler', StandardScaler()),  # Standardize the features
             ('model', RandomForestRegressor(
-                n_estimators=100, 
-                max_depth=30,
-                min_samples_split=10,
-                min_samples_leaf=2,
-                n_jobs=-1,
-                random_state=42))
+                n_estimators=100,         # Use 200 trees
+                max_depth=30,             # Limit the depth of trees to prevent overfitting
+                min_samples_split=10,      # Minimum samples required to split an internal node
+                min_samples_leaf=2,       # Minimum samples at a leaf node
+                #max_features='sqrt',      # Use square root of features for splitting
+                #bootstrap=True,           # Use bootstrap samples for trees
+                n_jobs=-1,                # Use all available cores
+                random_state=42           # For reproducibility
+            ))
         ])
-        
+            
         self.X_train = None
         self.X_test = None
         self.y_train = None
@@ -84,7 +87,7 @@ class SalesModel:
         None
         """
         # Split the data into features (X) and target (y)
-        X = data.drop(columns=['Customers', target_column])
+        X = data.drop(columns=[target_column])
         y = data[target_column]
 
         # Perform train-test split
@@ -193,7 +196,7 @@ class SalesModel:
 
     def plot_actual_vs_predicted(self):
         """
-        Plots the actual vs predicted values for the test set.
+        Plots the actual vs predicted values for the test set with enhanced visuals.
         
         Returns
         -------
@@ -203,24 +206,41 @@ class SalesModel:
         y_pred = self.model_pipeline.predict(self.X_test)
         
         # Create a scatter plot
-        plt.figure(figsize=(10, 4))
-        sns.scatterplot(x=self.y_test, y=y_pred, alpha=0.5)
+        plt.figure(figsize=(12, 6))
+        
+        # Set a color palette
+        sns.set_palette("Set2")
+        
+        # Scatter plot
+        sns.scatterplot(x=self.y_test, y=y_pred, alpha=0.6, s=100, edgecolor='w', linewidth=0.5)
 
         # Plot the reference line (y = x)
-        plt.plot([min(self.y_test), 
-                  max(self.y_test)], 
-                 [min(self.y_test), 
-                  max(self.y_test)], 
-                 color='red', linestyle='--')
+        plt.plot([min(self.y_test), max(self.y_test)], 
+                [min(self.y_test), max(self.y_test)], 
+                color='darkorange', linestyle='--', linewidth=2, label='Ideal Prediction')
 
-        # Set plot labels and title
-        plt.title('Actual vs Predicted Sales')
-        plt.xlabel('Actual Sales')
-        plt.ylabel('Predicted Sales')
+        # Set plot labels and title with larger font sizes
+        plt.title('Actual vs Predicted Sales', fontsize=18)
+        plt.xlabel('Actual Sales', fontsize=14)
+        plt.ylabel('Predicted Sales', fontsize=14)
+        
+        # Add a grid for better readability
+        plt.grid(visible=True, linestyle='--', alpha=0.7)
+
+        # Customize ticks
+        plt.xticks(fontsize=12)
+        plt.yticks(fontsize=12)
+
+        # Add a legend
+        plt.legend(fontsize=12)
+
+        # Set background color
+        plt.gca().set_facecolor('lightgrey')
 
         # Show the plot
+        plt.tight_layout()
         plt.show()
-    
+
     def make_predictions(self, test_data):
         """
         Makes predictions on the provided test data by ensuring feature consistency 
@@ -251,7 +271,7 @@ class SalesModel:
         return self.model_pipeline.predict(test_data)
 
 
-    def create_submission_file(self, test_data, test_id, submission_file_path):
+    def create_submission_file(self, test_data, submission_file_path):
         """
         Creates a submission file for Kaggle using predictions from the test data.
         
@@ -271,7 +291,7 @@ class SalesModel:
 
         # Prepare submission DataFrame (modify as necessary based on Kaggle's requirements)
         submission_df = pd.DataFrame({
-            'Id': test_id,  # Assuming your test data has an 'Id' column for submission
+            'Id': test_data.reset_index().Id,  # Assuming your test data has an 'Id' column for submission
             'Sales': predictions
         })
 
