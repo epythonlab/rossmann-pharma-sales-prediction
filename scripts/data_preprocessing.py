@@ -105,20 +105,20 @@ class DataPreprocessor:
             self.train_df[col] = label_encoder.fit_transform(self.train_df[col].astype(str))
             self.test_df[col] = label_encoder.transform(self.test_df[col].astype(str))  # Use transform on test
 
-    def scale_numeric_features(self):
-        """Scale numeric features consistently across both datasets."""
-        # Drop 'Sales' from test if it exists
-        self.test_df.drop(columns=['Sales'], errors='ignore', inplace=True)
+    # def scale_numeric_features(self):
+    #     """Scale numeric features consistently across both datasets."""
+    #     # Drop 'Sales' from test if it exists
+    #     self.test_df.drop(columns=['Sales'], errors='ignore', inplace=True)
 
-        # Identify and scale common numeric columns
-        num_cols_train = self.train_df.select_dtypes(include=['float64', 'int64']).columns.tolist()
-        num_cols_test = self.test_df.select_dtypes(include=['float64', 'int64']).columns.tolist()
+    #     # Identify and scale common numeric columns
+    #     num_cols_train = self.train_df.select_dtypes(include=['float64', 'int64']).columns.tolist()
+    #     num_cols_test = self.test_df.select_dtypes(include=['float64', 'int64']).columns.tolist()
 
-        common_cols = [col for col in num_cols_train if col in num_cols_test]
+    #     common_cols = [col for col in num_cols_train if col in num_cols_test]
 
-        # Fit scaler on training data and transform both train and test data
-        self.train_df[common_cols] = self.scaler.fit_transform(self.train_df[common_cols])
-        self.test_df[common_cols] = self.scaler.transform(self.test_df[common_cols])
+    #     # Fit scaler on training data and transform both train and test data
+    #     self.train_df[common_cols] = self.scaler.fit_transform(self.train_df[common_cols])
+    #     self.test_df[common_cols] = self.scaler.transform(self.test_df[common_cols])
 
     def preprocess(self):
         """Execute the full preprocessing pipeline."""
@@ -134,9 +134,11 @@ class DataPreprocessor:
         print("Encoding categorical data...")
         self.encode_categorical_data()
 
-        print("Scaling numeric features...")
-        self.scale_numeric_features()
-        
+        # print("Scaling numeric features...")
+        # self.scale_numeric_features()
+        # Drop 'Sales' from test if it exists
+        self.test_df.drop(columns=['Sales'], errors='ignore', inplace=True)
+    
         # Set 'Id' as the index for test data
         self.test_df.reset_index(drop=True, inplace=True)
         self.test_df.set_index(self.test_data['Id'], inplace=True)
