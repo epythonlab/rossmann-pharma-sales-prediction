@@ -13,6 +13,14 @@ The project structure is organized to support reproducible and scalable data pro
 ├── .github/
 │   └── workflows/
 │       ├── unittests.yml             # GitHub Actions workflow for running unit tests
+api/
+│
+└── model/                              # Directory containing the saved model files
+└── static/                              # Css files
+├── templates/                           # templates rendering html
+├── app.py                              # Main Flask application to call api
+├── load_model.py                      # Load model functions
+├── preprocessing.py                  # Preprocessing functions
 ├── .gitignore                        # Files and directories to be ignored by Git
 ├── requirements.txt                  # List of dependencies for the project
 ├── README.md                         # Project overview and instructions

@@ -3,74 +3,127 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Model Prediction Form</title>
+        <title>Rossmann Pharma Sales Prediction</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     </head>
-    
-<body>
-    <h1>Enter Input Data</h1>
-    <form action="/predict" method="post">
-        <label for="Store">Store ID:</label>
-        <input type="number" id="Store" name="Store" required><br><br>
-        
-        <label for="Open">Open:</label>
-        <select id="Open" name="Open" required>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-        </select><br><br>
-        
-        <label for="Promo">Promo:</label>
-        <select id="Promo" name="Promo" required>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-        </select><br><br>
-        
-        <label for="StateHoliday">State Holiday:</label>
-        <select id="StateHoliday" name="StateHoliday" required>
-            <option value="0">None</option>
-            <option value="a">Public Holiday</option>
-            <option value="b">Easter Holiday</option>
-            <option value="c">Christmas</option>
-        </select><br><br>
-        
-        <label for="SchoolHoliday">School Holiday:</label>
-        <select id="SchoolHoliday" name="SchoolHoliday" required>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-        </select><br><br>
-        
-        <label for="StoreType">Store Type:</label>
-        <select id="StoreType" name="StoreType" required>
-            <option value="a">Type A</option>
-            <option value="b">Type B</option>
-            <option value="c">Type C</option>
-            <option value="d">Type D</option>
-        </select><br><br>
-        
-        <label for="Assortment">Assortment:</label>
-        <select id="Assortment" name="Assortment" required>
-            <option value="a">Basic</option>
-            <option value="b">Extra</option>
-            <option value="c">Extended</option>
-        </select><br><br>
-        
-        <label for="CompetitionDistance">Competition Distance (in meters):</label>
-        <input type="number" id="CompetitionDistance" name="CompetitionDistance" required><br><br>
-        
-        <label for="Promo2">Promo2:</label>
-        <select id="Promo2" name="Promo2" required>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-        </select><br><br>
-        
-        <label for="Date">Date:</label>
-        <input type="date" id="Date" name="Date" required><br><br>
 
-        <input type="submit" value="Submit">
-    </form>
+<body>
+    <div class="main-container">
+        <h1>Rossmann Pharma Store Sales Prediction</h1>
+
+        <!-- Adjust the class based on whether prediction is available -->
+        <div class="prediction-layout {% if prediction %} prediction-present {% else %} no-prediction {% endif %}">
+            <!-- Form container -->
+            <div class="form-container">
+                <h2>Enter Input Data</h2>
+                <form action="/predict" method="post" class="form-grid" id="prediction-form">
+                    <div class="form-group">
+                        <label for="Store">Store ID:</label>
+                        <input type="number" id="Store" name="Store" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Open">Open:</label>
+                        <select id="Open" name="Open" required>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Promo">Promo:</label>
+                        <select id="Promo" name="Promo" required>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="StateHoliday">State Holiday:</label>
+                        <select id="StateHoliday" name="StateHoliday" required>
+                            <option value="0">None</option>
+                            <option value="a">Public Holiday</option>
+                            <option value="b">Easter Holiday</option>
+                            <option value="c">Christmas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="SchoolHoliday">School Holiday:</label>
+                        <select id="SchoolHoliday" name="SchoolHoliday" required>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="StoreType">Store Type:</label>
+                        <select id="StoreType" name="StoreType" required>
+                            <option value="a">Type A</option>
+                            <option value="b">Type B</option>
+                            <option value="c">Type C</option>
+                            <option value="d">Type D</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Assortment">Assortment:</label>
+                        <select id="Assortment" name="Assortment" required>
+                            <option value="a">Basic</option>
+                            <option value="b">Extra</option>
+                            <option value="c">Extended</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="CompetitionDistance">Competition Distance (in meters):</label>
+                        <input type="number" id="CompetitionDistance" name="CompetitionDistance" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Promo2">Promo2:</label>
+                        <select id="Promo2" name="Promo2" required>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Date">Date:</label>
+                        <input type="date" id="Date" name="Date" required>
+                    </div>
+                    <div class="form-group ">
+                        <div class="btn-group ">
+                        <input type="submit" value="Predict" class="submit-btn">
+                    </div>
+                    </div>
+                    
+                </form>
+            </div>
+            
+            <!-- Result container -->
+            <div id="prediction-result" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
     
-    {% if prediction %}
-        <h2>Prediction: {{ prediction }}</h2>
-    {% endif %}
+            const formData = new FormData(this); // Collect form data
+    
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display the prediction result
+                const resultDiv = document.getElementById('prediction-result');
+                resultDiv.innerHTML = `<h2>Store ID: ${data.store_id}</h2><p>Predicted Sales: ${data.predicted_sales}</p>`;
+            })
+            .catch(error => {
+                const resultDiv = document.getElementById('prediction-result');
+                resultDiv.innerHTML = `<h2>Error: Unable to fetch prediction.</h2><p>${error.message}</p>`;
+                console.error('Error:', error);
+            });
+        });
+    </script>
+    
 </body>
 </html>
