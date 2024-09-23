@@ -11,3 +11,4 @@ data/
 data.zip
 MachineLearningRating_v3.txt.dvc
 README.pdf
+sales_model_*.pkl
