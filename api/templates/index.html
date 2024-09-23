@@ -115,7 +115,20 @@
             .then(data => {
                 // Display the prediction result
                 const resultDiv = document.getElementById('prediction-result');
-                resultDiv.innerHTML = `<h2>Store ID: ${data.store_id}</h2><p>Predicted Sales: ${data.predicted_sales}</p>`;
+                resultDiv.innerHTML = `
+                <div class="result-table">
+                    <h2>Prediction Result</h2>
+                    <table>
+                        <tr>
+                            <th>Store ID</th>
+                            <th>Predicted Sales</th>
+                        </tr>
+                        <tr>
+                            <td>${data.store_id}</td>
+                            <td>${data.predicted_sales}</td>
+                        </tr>
+                    </table>
+                </div>`;
             })
             .catch(error => {
                 const resultDiv = document.getElementById('prediction-result');
