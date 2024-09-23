@@ -52,7 +52,7 @@ class SalesModel:
             ('scaler', StandardScaler()),  # Standardize the features
             ('model', RandomForestRegressor(
                 n_estimators=100,         # Use 200 trees
-                max_depth=30,             # Limit the depth of trees to prevent overfitting
+                max_depth=64,             # Limit the depth of trees to prevent overfitting
                 min_samples_split=10,      # Minimum samples required to split an internal node
                 min_samples_leaf=2,       # Minimum samples at a leaf node
                 #max_features='sqrt',      # Use square root of features for splitting
