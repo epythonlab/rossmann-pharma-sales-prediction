@@ -160,7 +160,7 @@ class SalesModel:
         """
         # Get current timestamp and format it
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        filename = f"sales_model_{timestamp}.pkl"
+        filename = f"../api/model/sales_model_{timestamp}.pkl"
         
         # Save the model
         joblib.dump(self.model_pipeline, filename)
